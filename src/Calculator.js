@@ -79,9 +79,17 @@ export default class Calculator extends React.Component {
 			if (state.operator) {
 				state.op2.text += state.op2.isDecimal ? "" : char;
 				state.op2.isDecimal = true;
+				if (state.hasPreviousAnswer) {
+					state.op2.text = "";
+					state.op2.sign = 1;
+				}
 			} else {
 				state.op1.text += state.op1.isDecimal ? "" : char;
 				state.op1.isDecimal = true;
+				if (state.hasPreviousAnswer) {
+					state.op1.text = "";
+					state.op1.sign = 1;
+				}
 			}
 			return state;
 		});
