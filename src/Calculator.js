@@ -29,6 +29,8 @@ export default class Calculator extends React.Component {
 				if (state.hasPreviousAnswer) {
 					state.hasPreviousAnswer = false;
 					state.op1.text = "";
+					state.op1.isDecimal = false;
+					state.op1.sign = 1;
 				}
 				state.op1.text += char;
 			}
@@ -56,7 +58,7 @@ export default class Calculator extends React.Component {
 				// result will be stored in operand 1
 				state.op1.text = Math.abs(result).toString();
 				state.op1.sign = result >= 0 ? 1 : -1;
-				state.op1.isDecimal = /.{1}/.test(state.op1.text);
+				state.op1.isDecimal = /\.{1}/.test(state.op1.text);
 				// reset operand 2 and operator
 				state.op2.isDecimal = false;
 				state.op2.sign = 1;
