@@ -12,14 +12,8 @@ export default class Calculator extends React.Component {
 		invalid: false,
 		hasPreviousAnswer: false
 	};
-	initialState = JSON.stringify(this.state);
 	getOperandNumericalVal = op => {
-		if (/^.{1}$/.test(op.text) || !op.text) return op.text;
-		else {
-			return (
-				(op.isDecimal ? parseFloat(op.text) : parseInt(op.text)) * op.sign
-			).toString();
-		}
+		return (op.sign < 0 ? "-" : "") + op.text;
 	};
 	updateOperand = char => {
 		this.setState(state => {
@@ -41,8 +35,18 @@ export default class Calculator extends React.Component {
 		this.setState({ operator: char });
 	};
 	calculations = {
-		"+": (first, second) => first + second,
-		"-": (first, second) => first - second
+		"+": (first, second) => {
+			const num1Digits = (first.toString().split(".")[1] || "").length;
+			const num2Digits = (second.toString().split(".")[1] || "").length;
+			const len = 10 ** Math.max(num1Digits, num2Digits);
+			return (first * len + second * len) / len;
+		},
+		"-": (first, second) => {
+			const num1Digits = (first.toString().split(".")[1] || "").length;
+			const num2Digits = (second.toString().split(".")[1] || "").length;
+			const len = 10 ** Math.max(num1Digits, num2Digits);
+			return (first * len - second * len) / len;
+		}
 	};
 	calculate = () => {
 		if (
@@ -93,7 +97,18 @@ export default class Calculator extends React.Component {
 		});
 	};
 	clear = () => {
-		this.setState(JSON.parse(this.initialState));
+		this.setState(state => {
+			if (state.operator) {
+				state.op2.text = "";
+				state.op2.isDecimal = false;
+				state.op2.sign = 1;
+			} else {
+				state.op1.text = "";
+				state.op1.isDecimal = false;
+				state.op1.sign = 1;
+			}
+			return state;
+		});
 	};
 	backSpace = () => {
 		this.setState(state => {
